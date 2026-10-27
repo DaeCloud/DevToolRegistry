@@ -1,0 +1,32 @@
+id: mariadb
+name: MariaDB (Bitnami)
+summary: Run a local MariaDB database server in a Bitnami Docker container.
+description: |
+  Starts a MariaDB instance on localhost:3306 and stores database files in a
+  persistent Docker volume. The included root password is for local development
+  only; change it before using the container in any shared or production environment.
+kind: docker
+tags: [database, docker, mariadb]
+repository: https://github.com/bitnami/containers/tree/main/bitnami/mariadb
+added: "2026-10-27"
+
+source:
+  type: docker
+  image: bitnami/mariadb
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start MariaDB on localhost:3306
+    type: docker
+    ports: ["127.0.0.1:3306:3306"]
+    volumes: ["mariadb-data:/bitnami/mariadb"]
+    env:
+      MARIADB_ROOT_PASSWORD: local-dev-only
+      MARIADB_DATABASE: devtoolregistry
+
+links:
+  - { label: MariaDB Documentation, url: https://mariadb.org/documentation/ }
+  - { label: Bitnami Container, url: https://github.com/bitnami/containers/tree/main/bitnami/mariadb }
