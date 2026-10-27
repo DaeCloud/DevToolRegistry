@@ -1,0 +1,664 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://devtool-launcher/schema/tool.schema.json",
+  "title": "DevToolLauncher tool manifest",
+  "description": "One file per tool at tools/<id>/tool.yaml. Mirrors crates/devtool-core/src/manifest.rs and src/lib/types.ts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "summary",
+    "kind",
+    "source",
+    "install"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 140
+    },
+    "description": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "cli",
+        "gui",
+        "docker",
+        "browser-extension",
+        "web",
+        "vscode-extension",
+        "library"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "uniqueItems": true
+    },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "url": {
+          "$ref": "#/definitions/httpsUrl"
+        }
+      }
+    },
+    "homepage": {
+      "$ref": "#/definitions/httpsUrl"
+    },
+    "repository": {
+      "$ref": "#/definitions/httpsUrl"
+    },
+    "icon": {
+      "type": "string",
+      "description": "File next to tool.yaml, or an https URL"
+    },
+    "readme": {
+      "type": "string",
+      "description": "README.md next to tool.yaml, or an https URL"
+    },
+    "platforms": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "windows",
+          "macos",
+          "linux"
+        ]
+      }
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tool"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string",
+            "description": "semver range, e.g. >=20"
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "github-release",
+            "gitlab-release",
+            "npm",
+            "docker",
+            "winget",
+            "url",
+            "none"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "github-release"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-github-release"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "gitlab-release"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-gitlab-release"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "npm"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-npm"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "docker"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-docker"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "winget"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-winget"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "url"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-url"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "none"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-none"
+          }
+        }
+      ]
+    },
+    "install": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "archive",
+            "msi",
+            "exe",
+            "npm-global",
+            "docker-pull",
+            "winget",
+            "none",
+            "browser-extension"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "archive"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/install-archive"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "msi",
+                  "exe"
+                ]
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/install-msi"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "npm-global",
+                  "docker-pull",
+                  "winget",
+                  "none"
+                ]
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/install-npm-global"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "browser-extension"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/install-browser-extension"
+          }
+        }
+      ]
+    },
+    "detect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command"
+      ],
+      "properties": {
+        "command": {
+          "type": "string"
+        },
+        "pattern": {
+          "$ref": "#/definitions/regex"
+        }
+      }
+    },
+    "run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "terminal",
+              "process",
+              "url",
+              "docker"
+            ]
+          },
+          "command": {
+            "type": "string"
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^https?://"
+          },
+          "cwd": {
+            "type": "string"
+          },
+          "env": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "ports": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "volumes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "url"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "url"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "enum": [
+                    "terminal",
+                    "process"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "command"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "label",
+          "url"
+        ],
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "url": {
+            "$ref": "#/definitions/httpsUrl"
+          }
+        }
+      }
+    },
+    "deprecated": {
+      "type": "boolean"
+    },
+    "added": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  },
+  "definitions": {
+    "httpsUrl": {
+      "type": "string",
+      "pattern": "^https://"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "regex": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source-github-release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "repo"
+      ],
+      "properties": {
+        "type": {
+          "const": "github-release"
+        },
+        "repo": {
+          "type": "string",
+          "pattern": "^[^/\\s]+/[^/\\s]+$"
+        },
+        "asset": {
+          "$ref": "#/definitions/regex"
+        },
+        "prerelease": {
+          "type": "boolean"
+        },
+        "auth": {
+          "type": "string"
+        },
+        "apiUrl": {
+          "$ref": "#/definitions/httpsUrl"
+        }
+      }
+    },
+    "source-gitlab-release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "project"
+      ],
+      "properties": {
+        "type": {
+          "const": "gitlab-release"
+        },
+        "project": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "asset": {
+          "$ref": "#/definitions/regex"
+        },
+        "auth": {
+          "type": "string"
+        }
+      }
+    },
+    "source-npm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "package"
+      ],
+      "properties": {
+        "type": {
+          "const": "npm"
+        },
+        "package": {
+          "type": "string"
+        },
+        "registry": {
+          "$ref": "#/definitions/httpsUrl"
+        },
+        "auth": {
+          "type": "string"
+        }
+      }
+    },
+    "source-docker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "image"
+      ],
+      "properties": {
+        "type": {
+          "const": "docker"
+        },
+        "image": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        }
+      }
+    },
+    "source-winget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "const": "winget"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "source-url": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "url",
+        "version"
+      ],
+      "properties": {
+        "type": {
+          "const": "url"
+        },
+        "url": {
+          "$ref": "#/definitions/httpsUrl"
+        },
+        "version": {
+          "type": "string"
+        },
+        "sha256": {
+          "$ref": "#/definitions/sha256"
+        }
+      }
+    },
+    "source-none": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "const": "none"
+        }
+      }
+    },
+    "install-archive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "const": "archive"
+        },
+        "bin": {
+          "type": "string"
+        },
+        "addToPath": {
+          "type": "boolean"
+        },
+        "sha256": {
+          "$ref": "#/definitions/sha256"
+        }
+      }
+    },
+    "install-msi": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "msi",
+            "exe"
+          ]
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "install-npm-global": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "npm-global",
+            "docker-pull",
+            "winget",
+            "none"
+          ]
+        }
+      }
+    },
+    "install-browser-extension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "const": "browser-extension"
+        },
+        "storeUrl": {
+          "$ref": "#/definitions/httpsUrl"
+        }
+      }
+    }
+  }
+}

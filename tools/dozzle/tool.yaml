@@ -1,0 +1,22 @@
+id: dozzle
+name: Dozzle
+summary: Real-time log viewer for your local Docker containers.
+description: Sample entry showing a **Docker image** with a run profile that maps ports and volumes.
+kind: docker
+tags: [docker, logging, third-party]
+repository: https://github.com/amir20/dozzle
+added: "2026-10-27"
+requires:
+  - { tool: docker }
+source:
+  type: docker
+  image: amir20/dozzle
+  tag: latest
+install:
+  type: docker-pull
+run:
+  - name: Start on :8888
+    type: docker
+    ports: ["8888:8080"]
+    volumes: ["//var/run/docker.sock:/var/run/docker.sock"]
+  - { name: Open UI, type: url, url: "http://localhost:8888" }

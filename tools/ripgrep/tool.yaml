@@ -1,0 +1,25 @@
+id: ripgrep
+name: ripgrep
+summary: Very fast recursive search that respects .gitignore.
+description: |
+  `rg` searches directories for a regex, skipping ignored and binary files by default.
+  Sample entry showing a **GitHub release archive** with a nested executable.
+kind: cli
+tags: [search, cli, third-party]
+owner: { name: Andrew Gallant }
+repository: https://github.com/BurntSushi/ripgrep
+added: "2026-10-27"
+source:
+  type: github-release
+  repo: BurntSushi/ripgrep
+  asset: 'ripgrep-.*-x86_64-pc-windows-msvc\.zip$'
+install:
+  type: archive
+  bin: rg.exe
+  addToPath: true
+detect:
+  command: rg --version
+run:
+  - { name: Open terminal, type: terminal, command: rg --help }
+links:
+  - { label: User guide, url: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md }

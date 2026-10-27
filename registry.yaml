@@ -1,0 +1,11 @@
+# Registry metadata. Copy this folder into its own repo (e.g. devtool-registry).
+schemaVersion: 1
+id: daecloud                      # short id; tools are keyed as team/<tool-id> in the launcher
+name: DaeCloud Dev Tools
+description: Tools built or recommended by the team.
+homepage: https://github.com/DaeCloud/DevToolRegistry   # TODO: your registry repo
+# Where dist/ is published (GitHub Pages, GitLab Pages, raw URL…). Used to make icon/README links absolute.
+# Can be overridden with the REGISTRY_BASE_URL environment variable in CI.
+publishUrl: ""
+maintainers:
+  - Daelin Campleman

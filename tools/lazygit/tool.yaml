@@ -1,0 +1,20 @@
+id: lazygit
+name: lazygit
+summary: Terminal UI for git that makes staging, rebasing and stashing quick.
+description: Sample entry showing a **winget** install for a useful third-party tool.
+kind: cli
+tags: [git, tui, third-party]
+repository: https://github.com/jesseduffield/lazygit
+added: "2026-10-27"
+requires:
+  - { tool: winget }
+source:
+  type: winget
+  id: JesseDuffield.lazygit
+install:
+  type: winget
+detect:
+  command: lazygit --version
+  pattern: 'version=([0-9.]+)'
+run:
+  - { name: Open in terminal, type: terminal, command: lazygit }

@@ -1,0 +1,20 @@
+id: http-server
+name: http-server
+summary: Zero-config static file server for quick local testing.
+description: Sample entry showing an **npm global** install with a terminal run profile.
+kind: cli
+tags: [web, node, third-party]
+repository: https://github.com/http-party/http-server
+added: "2026-10-27"
+requires:
+  - { tool: node, version: ">=18" }
+source:
+  type: npm
+  package: http-server
+install:
+  type: npm-global
+detect:
+  command: http-server --version
+run:
+  - { name: Serve current folder, type: terminal, command: http-server . -p 8080 }
+  - { name: Open localhost:8080, type: url, url: "http://localhost:8080" }

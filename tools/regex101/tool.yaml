@@ -1,0 +1,12 @@
+id: regex101
+name: regex101
+summary: Build, test and explain regular expressions in the browser.
+description: Sample entry showing a **web tool** with nothing to install.
+kind: web
+tags: [regex, web, third-party]
+homepage: https://regex101.com
+added: "2026-10-27"
+source: { type: none }
+install: { type: none }
+run:
+  - { name: Open, type: url, url: "https://regex101.com" }

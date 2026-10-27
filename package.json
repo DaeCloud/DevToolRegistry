@@ -1,0 +1,14 @@
+{
+  "name": "devtool-registry",
+  "private": true,
+  "type": "module",
+  "description": "Tool manifests for DevToolLauncher",
+  "scripts": {
+    "check": "node scripts/build-index.mjs --check",
+    "build": "node scripts/build-index.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "yaml": "^2.9.1"
+  }
+}

@@ -1,0 +1,38 @@
+# Copy this folder to tools/<your-tool-id>/ and fill it in. Folders starting with _ are skipped.
+# Full field reference: schema/tool.schema.json
+id: my-tool                   # must match the folder name; lowercase, digits, dashes
+name: My Tool
+summary: One line that says what it does and why you'd use it.
+description: |
+  A few sentences or bullet points. Markdown is fine.
+kind: cli                     # cli | gui | docker | browser-extension | web | vscode-extension | library
+tags: [example]
+owner: { name: Your Name, email: you@bbd.co.za }
+repository: https://gitlab.example.com/team/my-tool
+# readme: https://…/README.md   # optional; GitHub repos get their README automatically
+# icon: icon.png                # optional; put the file next to this tool.yaml
+added: "2026-10-27"
+
+requires:
+  - { tool: node, version: ">=20" }
+
+source:
+  type: gitlab-release        # github-release | gitlab-release | npm | docker | winget | url | none
+  project: team/my-tool
+  host: gitlab.example.com
+  asset: 'my-tool-.*-win-x64\.zip'
+  auth: gitlab-internal       # credential profile name configured in the launcher
+
+install:
+  type: archive               # archive | msi | exe | npm-global | docker-pull | winget | browser-extension | none
+  bin: my-tool.exe
+  addToPath: true
+
+detect:
+  command: my-tool --version
+
+run:
+  - { name: Open in terminal, type: terminal, command: my-tool }
+
+links:
+  - { label: Docs, url: https://gitlab.example.com/team/my-tool/-/wikis/home }
