@@ -1,0 +1,32 @@
+id: ollama
+name: Ollama
+summary: Run local language models through Ollama in a Docker container.
+description: |
+  Starts the Ollama API on localhost:11434 and keeps downloaded models in a
+  persistent Docker volume. This profile runs the container without GPU
+  passthrough; models can be downloaded using the Ollama API or CLI.
+kind: docker
+tags: [ai, docker, llm]
+repository: https://github.com/ollama/ollama
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+source:
+  type: docker
+  image: ollama/ollama
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Ollama API on localhost:11434
+    type: docker
+    ports: ["127.0.0.1:11434:11434"]
+    volumes: ["ollama-data:/root/.ollama"]
+
+links:
+  - { label: Ollama Documentation, url: https://docs.ollama.com/ }
+  - { label: Ollama Docker, url: https://github.com/ollama/ollama/blob/main/docs/docker.md }
