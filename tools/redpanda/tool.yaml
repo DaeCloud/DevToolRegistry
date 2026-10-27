@@ -1,0 +1,59 @@
+id: redpanda
+name: Redpanda (Kafka)
+summary: Kafka-compatible streaming broker with schema registry, in one container.
+description: |
+  A single-node Redpanda broker in dev mode. Kafka clients on this machine use
+  `localhost:<Kafka port>`; other launcher containers use `redpanda:9092`. The schema
+  registry and HTTP proxy are published too. Install **Redpanda Console** for a web UI.
+kind: docker
+tags: [messaging, kafka, docker, streaming]
+homepage: https://docs.redpanda.com
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: kafkaPort, label: Kafka port, type: port, default: "19092" }
+  - { id: schemaPort, label: Schema registry port, type: port, default: "18081" }
+  - { id: proxyPort, label: HTTP proxy port, type: port, default: "18082" }
+  - { id: adminPort, label: Admin API port, type: port, default: "19644" }
+
+source:
+  type: docker
+  image: docker.redpanda.com/redpandadata/redpanda
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Redpanda
+    type: docker
+    ports: ["127.0.0.1:${kafkaPort}:19092", "127.0.0.1:${schemaPort}:18081", "127.0.0.1:${proxyPort}:18082", "127.0.0.1:${adminPort}:9644"]
+    volumes: ["redpanda-data:/var/lib/redpanda/data"]
+    args:
+      - redpanda
+      - start
+      - --kafka-addr
+      - internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr
+      - internal://redpanda:9092,external://localhost:${kafkaPort}
+      - --pandaproxy-addr
+      - internal://0.0.0.0:8082,external://0.0.0.0:18082
+      - --advertise-pandaproxy-addr
+      - internal://redpanda:8082,external://localhost:${proxyPort}
+      - --schema-registry-addr
+      - internal://0.0.0.0:8081,external://0.0.0.0:18081
+      - --rpc-addr
+      - 0.0.0.0:33145
+      - --advertise-rpc-addr
+      - redpanda:33145
+      - --mode
+      - dev-container
+      - --smp
+      - "1"
+      - --default-log-level=info
+
+links:
+  - { label: Single-broker Docker example, url: "https://docs.redpanda.com/labs/docker-compose/single-broker/" }

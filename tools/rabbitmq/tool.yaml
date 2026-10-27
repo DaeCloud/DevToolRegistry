@@ -1,0 +1,42 @@
+id: rabbitmq
+name: RabbitMQ
+summary: Message broker with the management UI, for local development.
+description: |
+  RabbitMQ with the management plugin. AMQP on the AMQP port, the management UI on the
+  UI port; sign in with the user and password below. Other launcher containers use
+  `rabbitmq:5672`. Messages and definitions persist in a Docker volume.
+kind: docker
+tags: [messaging, docker, amqp]
+homepage: https://www.rabbitmq.com
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: amqpPort, label: AMQP port, type: port, default: "5672" }
+  - { id: uiPort, label: Management UI port, type: port, default: "15672" }
+  - { id: username, label: User, default: dev }
+  - { id: password, label: Password, type: password, default: dev }
+
+source:
+  type: docker
+  image: rabbitmq
+  tag: 4-management
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start RabbitMQ
+    type: docker
+    ports: ["127.0.0.1:${amqpPort}:5672", "127.0.0.1:${uiPort}:15672"]
+    volumes: ["rabbitmq-data:/var/lib/rabbitmq"]
+    dockerArgs: ["--hostname", "rabbitmq"]
+    env:
+      RABBITMQ_DEFAULT_USER: ${username}
+      RABBITMQ_DEFAULT_PASS: ${password}
+  - { name: Open management UI, type: url, url: "http://localhost:${uiPort}" }
+
+links:
+  - { label: Docker image, url: "https://hub.docker.com/_/rabbitmq" }

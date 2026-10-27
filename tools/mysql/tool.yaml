@@ -1,0 +1,40 @@
+id: mysql
+name: MySQL
+summary: Run a local MySQL server from the official image.
+description: |
+  Starts MySQL on localhost with data in a persistent volume. Other launcher containers
+  reach it as `mysql:3306`. The default port is the same as MariaDB's; change one of
+  them in Configure if you run both.
+kind: docker
+tags: [database, docker, mysql]
+homepage: https://dev.mysql.com/doc/
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: Host port, type: port, default: "3306" }
+  - { id: password, label: Root password, type: password, default: local-dev-only }
+  - { id: database, label: Database to create, default: app }
+  - { id: tag, label: Version (image tag), default: "8.4", description: "8.4 is the LTS line; latest follows innovation releases." }
+
+source:
+  type: docker
+  image: mysql
+  tag: ${tag}
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start MySQL on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:3306"]
+    volumes: ["mysql-data:/var/lib/mysql"]
+    env:
+      MYSQL_ROOT_PASSWORD: ${password}
+      MYSQL_DATABASE: ${database}
+
+links:
+  - { label: Docker image, url: "https://hub.docker.com/_/mysql" }

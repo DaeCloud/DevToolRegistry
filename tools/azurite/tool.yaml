@@ -1,0 +1,37 @@
+id: azurite
+name: Azurite
+summary: Local emulator for Azure Blob, Queue and Table storage.
+description: |
+  Microsoft's Azure Storage emulator. Use the connection string
+  `UseDevelopmentStorage=true` (or the well-known devstoreaccount1 account) against the
+  ports below; data is kept in a Docker volume. Other launcher containers reach it as
+  `azurite`.
+kind: docker
+tags: [azure, storage, docker, dotnet]
+repository: https://github.com/Azure/Azurite
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: blobPort, label: Blob port, type: port, default: "10000" }
+  - { id: queuePort, label: Queue port, type: port, default: "10001" }
+  - { id: tablePort, label: Table port, type: port, default: "10002" }
+
+source:
+  type: docker
+  image: mcr.microsoft.com/azure-storage/azurite
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Azurite
+    type: docker
+    ports: ["127.0.0.1:${blobPort}:10000", "127.0.0.1:${queuePort}:10001", "127.0.0.1:${tablePort}:10002"]
+    volumes: ["azurite-data:/data"]
+
+links:
+  - { label: Use Azurite, url: "https://learn.microsoft.com/azure/storage/common/storage-use-azurite" }

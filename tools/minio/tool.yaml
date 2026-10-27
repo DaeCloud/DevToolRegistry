@@ -1,0 +1,42 @@
+id: minio
+name: MinIO (S3)
+summary: S3-compatible object storage for local development (final community release).
+description: |
+  An S3-compatible API on the API port and a web console on the console port; sign in
+  with the user and password below. Other launcher containers use `http://minio:9000`.
+
+  MinIO has stopped publishing community builds: Docker Hub images were removed and the
+  last community release (September 2025) is only on quay.io, which this entry uses. It
+  works for development but won't get updates.
+kind: docker
+tags: [storage, s3, docker]
+repository: https://github.com/minio/minio
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: apiPort, label: S3 API port, type: port, default: "9000" }
+  - { id: consolePort, label: Console port, type: port, default: "9001" }
+  - { id: username, label: Root user, default: minioadmin }
+  - { id: password, label: Root password, type: password, default: minioadmin }
+
+source:
+  type: docker
+  image: quay.io/minio/minio
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start MinIO
+    type: docker
+    ports: ["127.0.0.1:${apiPort}:9000", "127.0.0.1:${consolePort}:9001"]
+    volumes: ["minio-data:/data"]
+    args: ["server", "/data", "--console-address", ":9001"]
+    env:
+      MINIO_ROOT_USER: ${username}
+      MINIO_ROOT_PASSWORD: ${password}
+  - { name: Open MinIO console, type: url, url: "http://localhost:${consolePort}" }

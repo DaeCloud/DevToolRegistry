@@ -22,6 +22,17 @@ The list of tools DevToolLauncher shows. Copy this folder into its own repositor
 Private repos: set `auth: <profile>` on the source. Each developer creates that credential profile once in the
 launcher's Settings; tokens are stored in Windows Credential Manager, never in this repo.
 
+## Docker tools and options
+
+Containers run as `devtool-<id>` on a shared `devtool-net` network, so tools reach each other by id
+(pgAdmin connects to `postgres:5432`, Redpanda Console to `redpanda:9092`).
+
+Declare `options` for anything a developer might want to change (host ports, passwords, image tag). Each one
+shows up in the launcher's Configure dialog and is substituted as `${id}` in the source `tag` and in run
+profiles. Users can also override ports, volumes, environment, extra `docker run` options and the restart
+policy; their choices stay on their machine. `npm run check` fails on a `${…}` with no matching option and
+warns when two tools default to the same host port.
+
 ## Publishing
 
 `.github/workflows/publish.yml` validates PRs and publishes `dist/` to GitHub Pages from `main`.

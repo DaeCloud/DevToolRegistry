@@ -1,0 +1,43 @@
+id: keycloak
+name: Keycloak
+summary: OpenID Connect / OAuth 2 identity server in development mode.
+description: |
+  Keycloak started with `start-dev` (HTTP, embedded database kept in a volume). Open the
+  admin console and sign in with the admin user below. Apps on this machine use
+  `http://localhost:<port>/realms/<realm>`; other launcher containers use
+  `http://keycloak:8080`. Not for production.
+kind: docker
+tags: [auth, oidc, docker, security]
+homepage: https://www.keycloak.org
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: Host port, type: port, default: "8180" }
+  - { id: username, label: Admin user, default: admin }
+  - { id: password, label: Admin password, type: password, default: admin }
+  - { id: tag, label: Version (image tag), default: latest, description: "e.g. 26.8 to pin a release" }
+
+source:
+  type: docker
+  image: quay.io/keycloak/keycloak
+  tag: ${tag}
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Keycloak on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:8080"]
+    volumes: ["keycloak-data:/opt/keycloak/data"]
+    args: ["start-dev"]
+    env:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${username}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${password}
+  - { name: Open admin console, type: url, url: "http://localhost:${port}/admin" }
+
+links:
+  - { label: Keycloak on Docker, url: "https://www.keycloak.org/getting-started/getting-started-docker" }

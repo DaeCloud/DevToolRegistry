@@ -1,0 +1,37 @@
+id: wiremock
+name: WireMock
+summary: Mock HTTP APIs with stubs, recordings and fault injection.
+description: |
+  WireMock standalone on localhost. Stubs live in `mappings/` and response bodies in
+  `__files/` under `/home/wiremock`, kept in a Docker volume by default. To use stubs
+  from your repo, change the volume under Configure → Advanced to
+  `C:\path\to\stubs:/home/wiremock`. Admin API: `/__admin`.
+kind: docker
+tags: [testing, mocking, http, docker]
+homepage: https://wiremock.org
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: Host port, type: port, default: "8089" }
+
+source:
+  type: docker
+  image: wiremock/wiremock
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start WireMock on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:8080"]
+    volumes: ["wiremock-data:/home/wiremock"]
+    args: ["--global-response-templating"]
+  - { name: Open admin API, type: url, url: "http://localhost:${port}/__admin/mappings" }
+
+links:
+  - { label: Running in Docker, url: "https://wiremock.org/docs/docker/" }

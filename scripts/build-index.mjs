@@ -19,6 +19,7 @@ const validate = new Ajv({ allErrors: true, strict: false }).compile(schema);
 
 const errors = [];
 const tools = [];
+const hostPorts = {};
 const toolsDir = join(root, "tools");
 
 for (const dir of readdirSync(toolsDir).sort()) {
@@ -49,6 +50,24 @@ for (const dir of readdirSync(toolsDir).sort()) {
       errors.push(`${dir}/tool.yaml: invalid regex ${pattern}`);
     }
   }
+  // ${option} references must point at declared options.
+  const optionIds = new Set((tool.options ?? []).map((o) => o.id));
+  if (optionIds.size !== (tool.options ?? []).length) errors.push(`${dir}: duplicate option ids`);
+  for (const o of tool.options ?? []) {
+    if (o.type === "port" && !(Number(o.default) >= 1 && Number(o.default) <= 65535)) errors.push(`${dir}: option ${o.id} default must be a port number`);
+    if (o.type === "select" && o.choices?.length && !o.choices.includes(o.default)) errors.push(`${dir}: option ${o.id} default must be one of its choices`);
+  }
+  const refs = [...JSON.stringify({ source: tool.source, run: tool.run ?? [] }).matchAll(/\$\{([^}]+)\}/g)].map((m) => m[1]);
+  for (const r of new Set(refs)) if (!optionIds.has(r)) errors.push(`${dir}: \${${r}} is used but no option has id '${r}'`);
+
+  // Note default host ports so clashes between Docker tools can be reported.
+  const defaults = Object.fromEntries((tool.options ?? []).map((o) => [o.id, o.default ?? ""]));
+  for (const p of (tool.run ?? []).filter((r) => r.type === "docker").flatMap((r) => r.ports ?? [])) {
+    const spec = p.replace(/\$\{([^}]+)\}/g, (_, id) => defaults[id] ?? "");
+    const parts = spec.split("/")[0].split(":");
+    if (parts.length >= 2) (hostPorts[parts[parts.length - 2]] ??= []).push(dir);
+  }
+
   if (tool.install.type === "npm-global" && tool.source.type !== "npm") errors.push(`${dir}: npm-global needs an npm source`);
   if (tool.install.type === "docker-pull" && tool.source.type !== "docker") errors.push(`${dir}: docker-pull needs a docker source`);
   if (tool.install.type === "winget" && tool.source.type !== "winget") errors.push(`${dir}: winget install needs a winget source`);
@@ -74,6 +93,10 @@ for (const dir of readdirSync(toolsDir).sort()) {
     if (baseUrl) tool.readme = `${baseUrl}/tools/${dir}/README.md`;
   }
   tools.push(tool);
+}
+
+for (const [port, users] of Object.entries(hostPorts)) {
+  if (users.length > 1) console.warn(`! default host port ${port} is shared by ${users.join(", ")} (fine unless they run together; users can change it in Configure)`);
 }
 
 if (errors.length) {

@@ -2,10 +2,11 @@ id: ripgrep
 name: ripgrep
 summary: Very fast recursive search that respects .gitignore.
 description: |
-  `rg` searches directories for a regex, skipping ignored and binary files by default.
-  Sample entry showing a **GitHub release archive** with a nested executable.
+  `rg` searches a directory tree for a regex, skipping ignored, hidden and binary files
+  by default. Much faster than findstr or grep on large repos, with smart case and file
+  type filters (`rg -t cs Foo`).
 kind: cli
-tags: [search, cli, third-party]
+tags: [search, cli]
 owner: { name: Andrew Gallant }
 repository: https://github.com/BurntSushi/ripgrep
 added: "2026-10-27"

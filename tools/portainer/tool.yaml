@@ -1,0 +1,35 @@
+id: portainer
+name: Portainer CE
+summary: Web UI for managing Docker containers, images, volumes and networks.
+description: |
+  Portainer Community Edition (LTS) on HTTPS with a self-signed certificate, so the
+  browser will warn the first time. Create the admin user within a few minutes of the
+  first start or Portainer stops for security; just start it again if that happens.
+kind: docker
+tags: [docker, admin]
+homepage: https://www.portainer.io
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: HTTPS UI port, type: port, default: "9443" }
+
+source:
+  type: docker
+  image: portainer/portainer-ce
+  tag: lts
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Portainer on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:9443"]
+    volumes: ["//var/run/docker.sock:/var/run/docker.sock", "portainer-data:/data"]
+  - { name: Open Portainer, type: url, url: "https://localhost:${port}" }
+
+links:
+  - { label: Install Portainer CE, url: "https://docs.portainer.io/start/install-ce" }

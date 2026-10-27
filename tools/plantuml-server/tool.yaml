@@ -1,13 +1,14 @@
 id: plantuml-server
 name: PlantUML Server
-summary: Run a local PlantUML server that renders diagrams on localhost:8085.
+summary: Run a local PlantUML server that renders diagrams on localhost.
 description: |
   Starts the official PlantUML server (Jetty image, Graphviz included) bound to
-  `127.0.0.1:8085`, so only this machine can reach it and diagram source stays local.
-  The GitLab PlantUML Viewer extension expects it at exactly this address.
+  `127.0.0.1`, so only this machine can reach it and diagram source stays local.
+  The GitLab PlantUML Viewer extension expects it on port 8085; keep the default
+  unless you've changed the extension's config.
 
-  Start it from here when you need it; the launcher doesn't restart it after a reboot.
-  Open `http://localhost:8085` to check it's running, or to use its built-in editor.
+  Start it from here when you need it, or set "Keep it, and restart with Docker" under
+  Configure → Advanced so it survives reboots. Open the editor link to check it's running.
 kind: docker
 tags: [plantuml, diagrams, docker]
 repository: https://github.com/plantuml/plantuml-server
@@ -15,6 +16,9 @@ added: "2026-10-27"
 
 requires:
   - { tool: docker }
+
+options:
+  - { id: port, label: Host port, type: port, default: "8085", description: The GitLab PlantUML Viewer extension expects 8085. }
 
 source:
   type: docker
@@ -25,10 +29,10 @@ install:
   type: docker-pull
 
 run:
-  - name: Start PlantUML server on localhost:8085
+  - name: Start PlantUML server on localhost:${port}
     type: docker
-    ports: ["127.0.0.1:8085:8080"]
-  - { name: Open PlantUML editor, type: url, url: "http://localhost:8085" }
+    ports: ["127.0.0.1:${port}:8080"]
+  - { name: Open PlantUML editor, type: url, url: "http://localhost:${port}" }
 
 links:
   - { label: PlantUML Server, url: "https://github.com/plantuml/plantuml-server" }

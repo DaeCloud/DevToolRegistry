@@ -1,0 +1,38 @@
+id: adminer
+name: Adminer
+summary: Single-page database UI for PostgreSQL, MySQL, MariaDB, SQL Server and more.
+description: |
+  A lightweight web UI for browsing and editing databases. The server field defaults to
+  the launcher's `postgres`; use `mariadb`, `mysql`, `mssql` or `mongo` to reach the
+  other launcher databases, or `host.docker.internal` for one outside Docker.
+kind: docker
+tags: [database, docker, admin]
+homepage: https://www.adminer.org
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: Web UI port, type: port, default: "8081" }
+  - { id: server, label: Default server, default: postgres }
+
+source:
+  type: docker
+  image: adminer
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Adminer on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:8080"]
+    dockerArgs: ["--add-host", "host.docker.internal:host-gateway"]
+    env:
+      ADMINER_DEFAULT_SERVER: ${server}
+  - { name: Open Adminer, type: url, url: "http://localhost:${port}" }
+
+links:
+  - { label: Docker image, url: "https://hub.docker.com/_/adminer" }

@@ -1,0 +1,38 @@
+id: seq
+name: Seq
+summary: Structured log server and viewer, popular with Serilog and .NET.
+description: |
+  Seq's UI and ingestion API on one port, so Serilog's default
+  `http://localhost:5341` works. Other launcher containers send logs to `http://seq:80`.
+  Runs without authentication for local use (you can enable it later under
+  Settings → Users). Running the image accepts the Seq EULA (`ACCEPT_EULA=Y`).
+kind: docker
+tags: [logging, observability, docker, dotnet]
+homepage: https://datalust.co/seq
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: UI and ingestion port, type: port, default: "5341" }
+
+source:
+  type: docker
+  image: datalust/seq
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Seq on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:80"]
+    volumes: ["seq-data:/data"]
+    env:
+      ACCEPT_EULA: "Y"
+  - { name: Open Seq, type: url, url: "http://localhost:${port}" }
+
+links:
+  - { label: Deployment with Docker, url: "https://datalust.co/docs/deployment-with-docker" }

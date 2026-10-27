@@ -1,35 +1,45 @@
 id: mariadb
-name: MariaDB (Bitnami)
-summary: Run a local MariaDB database server in a Bitnami Docker container.
+name: MariaDB
+summary: Run a local MariaDB database server from the official image.
 description: |
-  Starts a MariaDB instance on localhost:3306 and stores database files in a
-  persistent Docker volume. The included root password is for local development
-  only; change it before using the container in any shared or production environment.
+  Starts MariaDB on localhost and stores database files in a persistent Docker volume.
+  Other launcher containers reach it as `mariadb:3306`. The root password is for local
+  development only.
+
+  This replaces the earlier Bitnami-based entry: Bitnami moved its free Docker Hub
+  images to `bitnamilegacy` in August 2025, so `bitnami/mariadb:latest` is no longer
+  maintained. Data from the Bitnami volume isn't reused (different layout).
 kind: docker
-tags: [database, docker, mariadb]
-repository: https://github.com/bitnami/containers/tree/main/bitnami/mariadb
+tags: [database, docker, mariadb, mysql]
+repository: https://github.com/MariaDB/mariadb-docker
 added: "2026-10-27"
 
 requires:
   - { tool: docker }
 
+options:
+  - { id: port, label: Host port, type: port, default: "3306" }
+  - { id: password, label: Root password, type: password, default: local-dev-only }
+  - { id: database, label: Database to create, default: devtoolregistry }
+  - { id: tag, label: Version (image tag), default: lts, description: "lts, 11.8, 11.4, latest…" }
+
 source:
   type: docker
-  image: bitnami/mariadb
-  tag: latest
+  image: mariadb
+  tag: ${tag}
 
 install:
   type: docker-pull
 
 run:
-  - name: Start MariaDB on localhost:3306
+  - name: Start MariaDB on localhost:${port}
     type: docker
-    ports: ["127.0.0.1:3306:3306"]
-    volumes: ["mariadb-data:/bitnami/mariadb"]
+    ports: ["127.0.0.1:${port}:3306"]
+    volumes: ["mariadb-official-data:/var/lib/mysql"]
     env:
-      MARIADB_ROOT_PASSWORD: local-dev-only
-      MARIADB_DATABASE: devtoolregistry
+      MARIADB_ROOT_PASSWORD: ${password}
+      MARIADB_DATABASE: ${database}
 
 links:
   - { label: MariaDB Documentation, url: https://mariadb.org/documentation/ }
-  - { label: Bitnami Container, url: https://github.com/bitnami/containers/tree/main/bitnami/mariadb }
+  - { label: MariaDB Docker image, url: https://hub.docker.com/_/mariadb }

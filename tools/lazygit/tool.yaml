@@ -1,9 +1,12 @@
 id: lazygit
 name: lazygit
 summary: Terminal UI for git that makes staging, rebasing and stashing quick.
-description: Sample entry showing a **winget** install for a useful third-party tool.
+description: |
+  A keyboard-driven git UI in the terminal: stage individual lines, interactively rebase,
+  cherry-pick, resolve conflicts and manage stashes without memorising flags. Installed
+  through winget.
 kind: cli
-tags: [git, tui, third-party]
+tags: [git, tui]
 repository: https://github.com/jesseduffield/lazygit
 added: "2026-10-27"
 requires:

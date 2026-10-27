@@ -1,0 +1,41 @@
+id: localstack
+name: LocalStack (AWS)
+summary: Emulate AWS services (S3, SQS, Lambda, DynamoDB…) locally on one endpoint.
+description: |
+  All emulated AWS services on `http://localhost:<port>`; point the AWS CLI or SDKs at
+  it with `--endpoint-url`. Other launcher containers use `http://localstack:4566`.
+
+  Since 23 March 2026 the latest LocalStack images need an auth token from a LocalStack
+  account (a free plan exists). Paste it in Configure; it's stored only on this machine.
+  The Docker socket is mounted so Lambda functions can run in containers.
+kind: docker
+tags: [aws, cloud, docker, testing]
+homepage: https://docs.localstack.cloud
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: Gateway port, type: port, default: "4566" }
+  - { id: authToken, label: LocalStack auth token, type: password, default: "", description: From app.localstack.cloud → Auth Tokens. }
+
+source:
+  type: docker
+  image: localstack/localstack
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start LocalStack on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:4566"]
+    volumes: ["localstack-data:/var/lib/localstack", "//var/run/docker.sock:/var/run/docker.sock"]
+    env:
+      LOCALSTACK_AUTH_TOKEN: ${authToken}
+
+links:
+  - { label: Single image and auth tokens, url: "https://blog.localstack.cloud/localstack-single-image-next-steps/" }
+  - { label: Docker images, url: "https://docs.localstack.cloud/references/docker-images" }

@@ -1,0 +1,46 @@
+id: postgres
+name: PostgreSQL
+summary: Run a local PostgreSQL database server from the official image.
+description: |
+  Starts PostgreSQL on localhost with data in a persistent Docker volume. Connect with
+  user `postgres` and the password below. Other launcher containers (pgAdmin, Adminer,
+  your apps) reach it as `postgres:5432`.
+
+  The data directory is pinned with `PGDATA` so any version works with the same volume
+  layout. Switching major versions needs a dump and restore (or a new volume).
+kind: docker
+tags: [database, docker, postgres, sql]
+homepage: https://www.postgresql.org
+repository: https://github.com/docker-library/postgres
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: Host port, type: port, default: "5432" }
+  - { id: password, label: Password for user postgres, type: password, default: postgres }
+  - { id: database, label: Default database, default: postgres }
+  - { id: tag, label: Version (image tag), type: select, default: "18", choices: ["18", "17", "16", "15", "latest"] }
+
+source:
+  type: docker
+  image: postgres
+  tag: ${tag}
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start PostgreSQL on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:5432"]
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    env:
+      POSTGRES_PASSWORD: ${password}
+      POSTGRES_DB: ${database}
+      PGDATA: /var/lib/postgresql/data
+
+links:
+  - { label: PostgreSQL Documentation, url: "https://www.postgresql.org/docs/" }
+  - { label: Docker image, url: "https://hub.docker.com/_/postgres" }

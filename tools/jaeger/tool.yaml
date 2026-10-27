@@ -1,0 +1,41 @@
+id: jaeger
+name: Jaeger
+summary: Distributed tracing UI with OpenTelemetry (OTLP) ingestion, all in one container.
+description: |
+  Jaeger v2 all-in-one with in-memory storage. Send traces with OTLP to
+  `localhost:<gRPC port>` or `http://localhost:<HTTP port>`; other launcher containers
+  use `jaeger:4317` / `http://jaeger:4318`. Traces are lost when it stops.
+kind: docker
+tags: [tracing, observability, opentelemetry, docker]
+homepage: https://www.jaegertracing.io
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: uiPort, label: UI port, type: port, default: "16686" }
+  - { id: grpcPort, label: OTLP gRPC port, type: port, default: "4317" }
+  - { id: httpPort, label: OTLP HTTP port, type: port, default: "4318" }
+
+source:
+  type: docker
+  image: jaegertracing/jaeger
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Jaeger
+    type: docker
+    ports: ["127.0.0.1:${uiPort}:16686", "127.0.0.1:${grpcPort}:4317", "127.0.0.1:${httpPort}:4318"]
+    args:
+      - --set
+      - receivers.otlp.protocols.grpc.endpoint=0.0.0.0:4317
+      - --set
+      - receivers.otlp.protocols.http.endpoint=0.0.0.0:4318
+  - { name: Open Jaeger UI, type: url, url: "http://localhost:${uiPort}" }
+
+links:
+  - { label: Getting started, url: "https://www.jaegertracing.io/docs/2.0/getting-started/" }

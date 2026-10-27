@@ -1,0 +1,47 @@
+id: mssql
+name: SQL Server (Developer)
+summary: Run Microsoft SQL Server Developer edition locally in Docker.
+description: |
+  SQL Server for Linux in a container, with data in a persistent volume. Connect to
+  `localhost,<port>` as `sa` with the password below (it must have upper and lower case
+  letters, digits and a symbol, at least 8 characters). Other launcher containers reach
+  it as `mssql`.
+
+  Running the image accepts the SQL Server EULA (`ACCEPT_EULA=Y`). Developer edition is
+  free for development and test, not production. For 2025 images Microsoft lists
+  `StandardDeveloper` and `EnterpriseDeveloper` as the developer editions; change
+  Edition if `Developer` isn't accepted.
+kind: docker
+tags: [database, docker, sql-server, dotnet]
+homepage: https://learn.microsoft.com/sql/linux/quickstart-install-connect-docker
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: Host port, type: port, default: "1433" }
+  - { id: password, label: sa password, type: password, default: "LocalDev!2026" }
+  - { id: tag, label: Version (image tag), type: select, default: 2022-latest, choices: ["2022-latest", "2025-latest", "2019-latest"] }
+  - { id: edition, label: Edition (MSSQL_PID), type: select, default: Developer, choices: ["Developer", "StandardDeveloper", "EnterpriseDeveloper", "Express"] }
+
+source:
+  type: docker
+  image: mcr.microsoft.com/mssql/server
+  tag: ${tag}
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start SQL Server on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:1433"]
+    volumes: ["mssql-data:/var/opt/mssql"]
+    env:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: ${edition}
+      MSSQL_SA_PASSWORD: ${password}
+
+links:
+  - { label: Environment variables, url: "https://learn.microsoft.com/en-us/sql/linux/configure/environment-variables" }

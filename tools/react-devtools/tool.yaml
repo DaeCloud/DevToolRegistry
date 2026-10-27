@@ -2,11 +2,11 @@ id: react-devtools
 name: React Developer Tools
 summary: Inspect React component trees and profile renders in Chrome or Edge.
 description: |
-  Sample entry showing a **browser extension** installed from its store page.
-  For an internal extension, use a `github-release`/`gitlab-release` source and omit `storeUrl`;
-  the launcher unpacks it to a stable folder and walks you through "Load unpacked".
+  The official React browser extension: browse the component tree with props, state and
+  hooks, and profile which components re-render and why. Installs from the Chrome Web
+  Store (also works in Edge), which keeps it up to date.
 kind: browser-extension
-tags: [react, browser, third-party]
+tags: [react, browser]
 repository: https://github.com/facebook/react
 added: "2026-10-27"
 source: { type: none }

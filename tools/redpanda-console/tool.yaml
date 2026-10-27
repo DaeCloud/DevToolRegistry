@@ -1,0 +1,40 @@
+id: redpanda-console
+name: Redpanda Console
+summary: Web UI for Kafka topics, consumer groups and schemas.
+description: |
+  Connects to the launcher's **Redpanda** container (`redpanda:9092`) to browse topics
+  and messages, consumer groups and the schema registry. Start Redpanda first. To point
+  it at another Kafka, change `KAFKA_BROKERS` under Configure → Advanced.
+kind: docker
+tags: [messaging, kafka, docker, admin]
+homepage: https://docs.redpanda.com
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: Web UI port, type: port, default: "8082" }
+
+source:
+  type: docker
+  image: docker.redpanda.com/redpandadata/console
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Redpanda Console on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:8080"]
+    env:
+      KAFKA_BROKERS: redpanda:9092
+      SCHEMAREGISTRY_ENABLED: "true"
+      SCHEMAREGISTRY_URLS: http://redpanda:8081
+      REDPANDA_ADMINAPI_ENABLED: "true"
+      REDPANDA_ADMINAPI_URLS: http://redpanda:9644
+  - { name: Open Redpanda Console, type: url, url: "http://localhost:${port}" }
+
+links:
+  - { label: Console docs, url: "https://docs.redpanda.com/current/console/" }

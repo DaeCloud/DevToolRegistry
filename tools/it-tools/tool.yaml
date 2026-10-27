@@ -13,6 +13,9 @@ added: "2026-10-27"
 requires:
   - { tool: docker }
 
+options:
+  - { id: port, label: Web UI port, type: port, default: "8080" }
+
 source:
   type: docker
   image: corentinth/it-tools
@@ -22,10 +25,10 @@ install:
   type: docker-pull
 
 run:
-  - name: Start IT Tools on localhost:8080
+  - name: Start IT Tools on localhost:${port}
     type: docker
-    ports: ["127.0.0.1:8080:80"]
-  - { name: Open IT Tools, type: url, url: "http://localhost:8080" }
+    ports: ["127.0.0.1:${port}:80"]
+  - { name: Open IT Tools, type: url, url: "http://localhost:${port}" }
 
 links:
   - { label: IT Tools, url: https://github.com/CorentinTh/it-tools }

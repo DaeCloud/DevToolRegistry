@@ -1,9 +1,12 @@
 id: regex101
 name: regex101
 summary: Build, test and explain regular expressions in the browser.
-description: Sample entry showing a **web tool** with nothing to install.
+description: |
+  Online regex tester with live matching, a plain-English explanation of each token, a
+  quick reference and flavours for .NET, JavaScript, Python, Java, PCRE and more.
+  Nothing to install.
 kind: web
-tags: [regex, web, third-party]
+tags: [regex, web]
 homepage: https://regex101.com
 added: "2026-10-27"
 source: { type: none }

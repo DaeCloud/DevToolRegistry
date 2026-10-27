@@ -1,0 +1,40 @@
+id: mongo
+name: MongoDB
+summary: Run a local MongoDB server from the official image.
+description: |
+  Starts MongoDB on localhost with a root user and data in a persistent volume.
+  Connect with `mongodb://root:<password>@localhost:<port>`; other launcher containers
+  use `mongo:27017`.
+kind: docker
+tags: [database, docker, mongodb, nosql]
+homepage: https://www.mongodb.com/docs/
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+options:
+  - { id: port, label: Host port, type: port, default: "27017" }
+  - { id: username, label: Root user, default: root }
+  - { id: password, label: Root password, type: password, default: local-dev-only }
+  - { id: tag, label: Version (image tag), default: "8" }
+
+source:
+  type: docker
+  image: mongo
+  tag: ${tag}
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start MongoDB on localhost:${port}
+    type: docker
+    ports: ["127.0.0.1:${port}:27017"]
+    volumes: ["mongo-data:/data/db"]
+    env:
+      MONGO_INITDB_ROOT_USERNAME: ${username}
+      MONGO_INITDB_ROOT_PASSWORD: ${password}
+
+links:
+  - { label: Docker image, url: "https://hub.docker.com/_/mongo" }

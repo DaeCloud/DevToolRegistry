@@ -46,3 +46,23 @@ links:
 # install:
 #   type: browser-extension
 #   path: extension           # folder with manifest.json; omit to find it automatically
+
+# Docker image with settings users can change before installing (Configure dialog):
+# options:
+#   - { id: port, label: Host port, type: port, default: "5432" }      # text | port | password | path | select
+#   - { id: password, label: Password, type: password, default: postgres }
+#   - { id: tag, label: Version, type: select, default: "18", choices: ["18", "17", "16"] }
+# source:
+#   type: docker
+#   image: postgres
+#   tag: ${tag}               # ${option-id} works in the tag and anywhere in run profiles
+# install:
+#   type: docker-pull
+# run:
+#   - name: Start on :${port}
+#     type: docker
+#     ports: ["127.0.0.1:${port}:5432"]
+#     env: { POSTGRES_PASSWORD: "${password}" }
+#     volumes: ["postgres-data:/var/lib/postgresql/data"]
+#     dockerArgs: ["--shm-size", "256m"]   # extra `docker run` options
+#     restart: unless-stopped              # keep the container and restart it with Docker
