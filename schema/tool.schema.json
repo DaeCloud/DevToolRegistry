@@ -125,6 +125,9 @@
             "docker",
             "winget",
             "url",
+            "github-repo",
+            "gitlab-repo",
+            "git",
             "none"
           ]
         }
@@ -212,6 +215,42 @@
           },
           "then": {
             "$ref": "#/definitions/source-none"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "github-repo"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-github-repo"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "gitlab-repo"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-gitlab-repo"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "git"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/source-git"
           }
         }
       ]
@@ -657,6 +696,85 @@
         },
         "storeUrl": {
           "$ref": "#/definitions/httpsUrl"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^[^\\\\]*$",
+          "description": "Folder (forward slashes) inside the repo/archive containing manifest.json; found automatically if omitted"
+        }
+      }
+    },
+    "source-github-repo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "repo"
+      ],
+      "properties": {
+        "type": {
+          "const": "github-repo"
+        },
+        "repo": {
+          "type": "string",
+          "pattern": "^[^/\\s]+/[^/\\s]+$"
+        },
+        "ref": {
+          "type": "string",
+          "description": "Branch, tag or commit; defaults to the default branch"
+        },
+        "auth": {
+          "type": "string"
+        },
+        "apiUrl": {
+          "$ref": "#/definitions/httpsUrl"
+        }
+      }
+    },
+    "source-gitlab-repo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "project"
+      ],
+      "properties": {
+        "type": {
+          "const": "gitlab-repo"
+        },
+        "project": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string",
+          "description": "Branch, tag or commit; defaults to the default branch"
+        },
+        "auth": {
+          "type": "string"
+        }
+      }
+    },
+    "source-git": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "url"
+      ],
+      "properties": {
+        "type": {
+          "const": "git"
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^(https://|ssh://|git@)"
+        },
+        "ref": {
+          "type": "string",
+          "description": "Branch, tag or commit; defaults to the default branch"
         }
       }
     }

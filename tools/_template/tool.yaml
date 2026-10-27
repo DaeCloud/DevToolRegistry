@@ -17,7 +17,7 @@ requires:
   - { tool: node, version: ">=20" }
 
 source:
-  type: gitlab-release        # github-release | gitlab-release | npm | docker | winget | url | none
+  type: gitlab-release        # github-release | gitlab-release | github-repo | gitlab-repo | git | npm | docker | winget | url | none
   project: team/my-tool
   host: gitlab.example.com
   asset: 'my-tool-.*-win-x64\.zip'
@@ -36,3 +36,13 @@ run:
 
 links:
   - { label: Docs, url: https://gitlab.example.com/team/my-tool/-/wikis/home }
+
+# Browser extension straight from repo files (no release/zip needed):
+# source:
+#   type: github-repo         # or gitlab-repo (project/host) or git (url: any remote)
+#   repo: bbd/my-extension
+#   ref: main                 # branch, tag or commit; omit for the default branch
+#   auth: github-bbd          # private repos
+# install:
+#   type: browser-extension
+#   path: extension           # folder with manifest.json; omit to find it automatically

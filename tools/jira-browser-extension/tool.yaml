@@ -1,0 +1,40 @@
+id: jira-browser-extension
+name: Jira Review Visibility
+summary: Shows GitLab merge request review status, pipeline health and sprint goals on Jira boards.
+description: |
+  A Chromium extension (Edge, Chrome, Brave) that puts GitLab merge request state on the
+  Jira sprint board: one row per merge request with approvals, reviewers, unresolved
+  threads, pipeline status and size, plus "what is stuck" warnings, a board summary
+  strip, sprint goals and a review-required queue.
+
+  **Before installing:** the launcher downloads the extension from Bayport GitLab, so add a
+  credential profile in Settings → Credential profiles: id `gitlab-bayport`, provider
+  GitLab, host `gitlab.bayportfinance.com`, with a personal access token that has the
+  `read_api` scope. Connect to the VPN if GitLab isn't reachable.
+
+  **After installing:** load the folder once with "Load unpacked", then click the
+  extension's toolbar icon and enter your GitLab URL and a `read_api` token on its
+  options page. After each update, click Reload on the extension.
+kind: browser-extension
+tags: [jira, gitlab, code-review, browser-extension]
+owner: { name: Daelin Campleman }
+icon: icon.png
+added: "2026-10-27"
+
+# Plain repo files (no release or zip). Each new commit on master shows as an update.
+# Private repo: uses the launcher's `gitlab-bayport` credential profile (read_api token).
+# Alternative without a token in the launcher, using your existing git login instead:
+#   source: { type: git, url: "https://gitlab.bayportfinance.com/bigs/dev-tools/jira-browser-extension.git", ref: master }
+source:
+  type: gitlab-repo
+  host: gitlab.bayportfinance.com
+  project: bigs/dev-tools/jira-browser-extension
+  ref: master
+  auth: gitlab-bayport
+
+install:
+  type: browser-extension     # manifest.json is at the repo root
+
+links:
+  - { label: Repository, url: "https://gitlab.bayportfinance.com/bigs/dev-tools/jira-browser-extension" }
+  - { label: Report an issue, url: "https://gitlab.bayportfinance.com/bigs/dev-tools/jira-browser-extension/-/issues" }

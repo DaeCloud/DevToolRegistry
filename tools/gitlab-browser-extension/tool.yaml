@@ -1,0 +1,43 @@
+id: gitlab-browser-extension
+name: GitLab PlantUML Viewer
+summary: Renders PlantUML files as diagrams in GitLab file views and merge request diffs.
+description: |
+  A Chromium extension (Edge, Chrome, Brave) for Bayport GitLab. Open a `.puml`,
+  `.plantuml`, `.pu`, `.iuml` or `.wsd` file and the rendered diagram appears above
+  the source. On a merge request's Changes tab, modified diagrams show Before and
+  After side by side with added, removed and changed elements highlighted.
+
+  **Needs a local PlantUML server** at `http://localhost:8085`, so diagram source never
+  leaves your machine. Install and start the **PlantUML Server** tool from this
+  catalogue (it needs Docker).
+
+  **Before installing:** the launcher downloads the extension from Bayport GitLab, so add a
+  credential profile in Settings → Credential profiles: id `gitlab-bayport`, provider
+  GitLab, host `gitlab.bayportfinance.com`, with a personal access token that has the
+  `read_api` scope. Connect to the VPN if GitLab isn't reachable.
+
+  **After installing:** load the folder once with "Load unpacked", then click the
+  extension's icon and check that Server status says Reachable. After each update,
+  click Reload on the extension and hard-refresh open GitLab tabs (Ctrl+Shift+R).
+kind: browser-extension
+tags: [gitlab, plantuml, diagrams, code-review, browser-extension]
+owner: { name: Chris Canning }
+added: "2026-10-27"
+
+# Plain repo files (no release or zip). Each new commit on master shows as an update.
+# Private repo: uses the launcher's `gitlab-bayport` credential profile (read_api token).
+# Alternative without a token in the launcher, using your existing git login instead:
+#   source: { type: git, url: "https://gitlab.bayportfinance.com/bigs/dev-tools/gitlab-browser-extension.git", ref: master }
+source:
+  type: gitlab-repo
+  host: gitlab.bayportfinance.com
+  project: bigs/dev-tools/gitlab-browser-extension
+  ref: master
+  auth: gitlab-bayport
+
+install:
+  type: browser-extension     # manifest.json is at the repo root
+
+links:
+  - { label: Repository, url: "https://gitlab.bayportfinance.com/bigs/dev-tools/gitlab-browser-extension" }
+  - { label: PlantUML language reference, url: "https://plantuml.com/" }

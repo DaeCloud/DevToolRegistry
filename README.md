@@ -14,7 +14,7 @@ The list of tools DevToolLauncher shows. Copy this folder into its own repositor
 
 | Block | Answers | Options |
 | --- | --- | --- |
-| `source` | Where do versions come from? | `github-release`, `gitlab-release`, `npm`, `docker`, `winget`, `url`, `none` |
+| `source` | Where do versions come from? | `github-release`, `gitlab-release`, `github-repo`, `gitlab-repo`, `git` (plain repo files at a branch/tag/commit), `npm`, `docker`, `winget`, `url`, `none` |
 | `install` | How is a version put on the machine? | `archive`, `msi`, `exe`, `npm-global`, `docker-pull`, `winget`, `browser-extension`, `none` |
 | `run` | How is it launched? | `terminal`, `process`, `url`, `docker` profiles |
 | `detect` | What version is installed outside the launcher? | a command + optional regex |

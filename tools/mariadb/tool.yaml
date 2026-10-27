@@ -10,6 +10,9 @@ tags: [database, docker, mariadb]
 repository: https://github.com/bitnami/containers/tree/main/bitnami/mariadb
 added: "2026-10-27"
 
+requires:
+  - { tool: docker }
+
 source:
   type: docker
   image: bitnami/mariadb
