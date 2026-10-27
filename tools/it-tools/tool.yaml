@@ -1,0 +1,31 @@
+id: it-tools
+name: IT Tools
+summary: Use a locally hosted web toolbox for Base64, encoding, and developer utilities.
+description: |
+  Provides a browser-based collection of developer utilities, including Base64
+  encode/decode, hashes, converters, and generators. The web interface is served
+  locally through Docker.
+kind: docker
+tags: [developer-tools, docker, encoding]
+repository: https://github.com/CorentinTh/it-tools
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+source:
+  type: docker
+  image: corentinth/it-tools
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start IT Tools on localhost:8080
+    type: docker
+    ports: ["127.0.0.1:8080:80"]
+  - { name: Open IT Tools, type: url, url: "http://localhost:8080" }
+
+links:
+  - { label: IT Tools, url: https://github.com/CorentinTh/it-tools }

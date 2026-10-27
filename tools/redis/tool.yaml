@@ -1,0 +1,31 @@
+id: redis
+name: Redis
+summary: Run a local Redis server for caching and application development.
+description: |
+  Starts Redis on localhost:6379 and stores its data in a persistent Docker
+  volume. The port is bound to the local machine for development use.
+kind: docker
+tags: [cache, database, docker]
+repository: https://github.com/redis/redis
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+source:
+  type: docker
+  image: redis
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Redis on localhost:6379
+    type: docker
+    ports: ["127.0.0.1:6379:6379"]
+    volumes: ["redis-data:/data"]
+
+links:
+  - { label: Redis Documentation, url: https://redis.io/docs/latest/ }
+  - { label: Run Redis on Docker, url: https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/docker/ }

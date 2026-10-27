@@ -1,0 +1,35 @@
+id: mailpit
+name: Mailpit
+summary: Capture and inspect application email locally during development.
+description: |
+  Runs a local SMTP server and a web interface for viewing captured messages.
+  The web UI is available on localhost:8025 and SMTP on localhost:1025.
+  Captured messages are stored in a persistent Docker volume.
+kind: docker
+tags: [docker, email, testing]
+repository: https://github.com/axllent/mailpit
+added: "2026-10-27"
+
+requires:
+  - { tool: docker }
+
+source:
+  type: docker
+  image: axllent/mailpit
+  tag: latest
+
+install:
+  type: docker-pull
+
+run:
+  - name: Start Mailpit
+    type: docker
+    ports: ["127.0.0.1:8025:8025", "127.0.0.1:1025:1025"]
+    volumes: ["mailpit-data:/data"]
+    env:
+      MP_DATABASE: /data/mailpit.db
+  - { name: Open Mailpit inbox, type: url, url: "http://localhost:8025" }
+
+links:
+  - { label: Mailpit Documentation, url: https://mailpit.axllent.org/docs/ }
+  - { label: Mailpit Docker, url: https://mailpit.axllent.org/docs/install/docker/ }
